@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "UserCosmeticApp",
+    "slug": "UserCosmeticApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.doanhieu123.UserCosmeticApp",
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.doanhieu123.UserCosmeticApp",
+      "googleServicesFile": "./android/app/google-services.json"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "GOOGLE_WEB_CLIENT_ID": "218027957302-0701f4nltsji54gdknpn9j2uljg52qs7.apps.googleusercontent.com",
+      "GOOGLE_ANDROID_CLIENT_ID": "218027957302-o7co3ik6e42l4je5mom4794obbsqkifc.apps.googleusercontent.com",
+      "GOOGLE_IOS_CLIENT_ID": "218027957302-1dajlj214el9mfk9292i9mae8gb6ehhj.apps.googleusercontent.com"
+    },
+    "plugins": ["expo-secure-store"]
+  }
+}

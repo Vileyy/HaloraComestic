@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "218027957302",
+    "firebase_url": "https://admincosmetic-8f098-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "admincosmetic-8f098",
+    "storage_bucket": "admincosmetic-8f098.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:218027957302:android:41d03553f44c9dc6e10c97",
+        "android_client_info": {
+          "package_name": "com.doanhieu123.UserCosmeticApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "218027957302-o7co3ik6e42l4je5mom4794obbsqkifc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.doanhieu123.UserCosmeticApp",
+            "certificate_hash": "c1b72874cc6527db56d7d020b2228bf564d47def"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ9vJ_pyxIxfU-lSaz9uawttCsnlww4hU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "218027957302-0701f4nltsji54gdknpn9j2uljg52qs7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
