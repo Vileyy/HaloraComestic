@@ -231,8 +231,6 @@ const OrderDetailScreen = ({ route }) => {
         status: "cancelled",
         cancelledDate: new Date().toISOString(),
       });
-
-      // Option 1: Update status only
       setOrder({
         ...order,
         status: "cancelled",
@@ -612,7 +610,7 @@ const OrderDetailScreen = ({ route }) => {
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>Phí vận chuyển</Text>
               <Text style={styles.summaryValue}>
-                {(order.shippingFee || 0).toLocaleString("vi-VN")} đ
+                {order.shippingMethod === "express" ? "30.000" : "60.000"} đ
               </Text>
             </View>
 
