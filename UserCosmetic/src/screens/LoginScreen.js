@@ -220,7 +220,7 @@ const LoginScreen = ({ navigation }) => {
           secureTextEntry
         />
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
           <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
         </TouchableOpacity>
 
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   },
   forgotPassword: {
     textAlign: "right",
-    color: "black",
+    color: "#FF6699",
     marginBottom: 10,
   },
   separator: {

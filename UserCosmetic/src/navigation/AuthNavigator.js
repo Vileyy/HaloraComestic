@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
 import ProductDetailScreen from "../components/Product/ProductDetailScreen";
 import CartScreen from "../screens/Cart/CartScreen";
@@ -35,6 +36,10 @@ const AppNavigator = () => {
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+          />
           <Stack.Screen name="Home" component={BottomTabNavigator} />
           <Stack.Screen name="SearchScreen" component={SearchScreen} />
           <Stack.Screen name="ExploreScreen" component={ExploreScreen} />
