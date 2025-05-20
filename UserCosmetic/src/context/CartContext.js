@@ -9,7 +9,7 @@ export const CartProvider = ({ children }) => {
   const auth = getAuth();
   const db = getDatabase();
 
-  // Load giỏ hàng từ Firebase khi đăng nhập hoặc khi cart thay đổi
+  // Load giỏ hàng từ Firebase
   useEffect(() => {
     const userId = auth.currentUser?.uid;
     if (!userId) return;
@@ -24,7 +24,6 @@ export const CartProvider = ({ children }) => {
       }
     });
 
-    // Cleanup subscription
     return () => unsubscribe();
   }, [auth.currentUser]);
 

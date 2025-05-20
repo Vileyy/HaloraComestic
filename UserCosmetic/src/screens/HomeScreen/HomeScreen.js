@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useNavigation } from "@react-navigation/native";
+import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 import Header from "../../components/Home/Header";
 import Banner from "../../components/Home/Banner";
 import FlashDeals from "../../components/Home/FlashDeals";
@@ -92,7 +93,10 @@ const HomeScreen = () => {
 
       {/* Danh sách gợi ý */}
       {suggestions.length > 0 && (
-        <View style={styles.suggestionsContainer}>
+        <Animated.View
+          entering={FadeInDown.duration(300)}
+          style={styles.suggestionsContainer}
+        >
           <FlatList
             data={suggestions}
             keyExtractor={(item) => item.id}
@@ -116,7 +120,7 @@ const HomeScreen = () => {
               </TouchableOpacity>
             )}
           />
-        </View>
+        </Animated.View>
       )}
 
       <ScrollView
@@ -126,15 +130,29 @@ const HomeScreen = () => {
       >
         {/* Nội dung chính */}
         <View style={styles.content}>
-          <Banner />
-          <FlashDeals
-            onPress={(product) =>
-              navigation.navigate("ProductDetailScreen", { product })
-            }
-          />
-          <Categories onPress={handleSearchChange} />
-          <Brands onPress={handleSearchChange} />
-          <NewProducts products={products} />
+          <Animated.View entering={FadeInDown.duration(500).delay(100)}>
+            <Banner />
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.duration(500).delay(200)}>
+            <FlashDeals
+              onPress={(product) =>
+                navigation.navigate("ProductDetailScreen", { product })
+              }
+            />
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.duration(500).delay(300)}>
+            <Categories onPress={handleSearchChange} />
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.duration(500).delay(400)}>
+            <Brands onPress={handleSearchChange} />
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.duration(500).delay(500)}>
+            <NewProducts products={products} />
+          </Animated.View>
         </View>
       </ScrollView>
     </SafeAreaView>

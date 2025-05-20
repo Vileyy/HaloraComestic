@@ -16,7 +16,7 @@ import {
   markNotificationAsRead,
 } from "../../services/notificationService";
 import { Ionicons } from "@expo/vector-icons";
-
+import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 const NotificationsScreen = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,7 +75,8 @@ const NotificationsScreen = () => {
         ]}
         onPress={() => handleNotificationPress(item)}
       >
-        <View
+        <Animated.View
+          entering={FadeInDown.duration(300)}
           style={[
             styles.iconContainer,
             item.important ? styles.importantIcon : styles.regularIcon,
@@ -87,22 +88,22 @@ const NotificationsScreen = () => {
             size={24}
             color="#fff"
           />
-        </View>
+        </Animated.View>
 
-        <View style={styles.contentContainer}>
-          <View style={styles.titleContainer}>
+        <Animated.View entering={FadeInDown.duration(300)} style={styles.contentContainer}>
+          <Animated.View entering={FadeInDown.duration(300)} style={styles.titleContainer}>
             <Text style={[styles.title, !item.isRead && styles.unreadTitle]}>
               {item.title}
             </Text>
             {!item.isRead && <View style={styles.unreadDot} />}
-          </View>
+          </Animated.View>
 
           <Text style={styles.content} numberOfLines={2}>
             {item.content}
           </Text>
 
           <Text style={styles.timeText}>{formatDate(item.createdAt)}</Text>
-        </View>
+        </Animated.View>
       </TouchableOpacity>
     );
   };
@@ -116,13 +117,13 @@ const NotificationsScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <Animated.View entering={FadeInDown.duration(300)} style={styles.container}>
+      <Animated.View entering={FadeInDown.duration(300)} style={styles.header}>
         <Text style={styles.headerTitle}>Thông báo</Text>
-        <View style={styles.unreadCountContainer}>
+        <Animated.View entering={FadeInDown.duration(300)} style={styles.unreadCountContainer}>
           <Text style={styles.unreadCountText}>{unreadCount} chưa đọc</Text>
-        </View>
-      </View>
+        </Animated.View>
+      </Animated.View>
 
       {notifications.length === 0 ? (
         <View style={styles.emptyContainer}>
@@ -200,7 +201,7 @@ const NotificationsScreen = () => {
           </View>
         </View>
       </Modal>
-    </View>
+    </Animated.View>
   );
 };
 

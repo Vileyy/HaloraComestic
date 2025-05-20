@@ -31,13 +31,11 @@ const OrderStatusScreen = () => {
       onValue(ordersRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-          // Convert object to array and sort by createdAt (newest first)
           const ordersList = Object.keys(data).map((key) => ({
             id: key,
             ...data[key],
           }));
           
-          // Sort orders by createdAt (newest first)
           ordersList.sort((a, b) => {
             return new Date(b.createdAt) - new Date(a.createdAt);
           });

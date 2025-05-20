@@ -8,7 +8,7 @@ import {
   SafeAreaView,
   StatusBar,
   ScrollView,
-  Animated,
+  Animated as RNAnimated,
   Easing,
   ActivityIndicator,
   Dimensions,
@@ -16,21 +16,26 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useCart } from "../../context/CartContext"; // Import context
-import { useFavorites } from "../../context/FavoritesContext"; // Import favorites context
+import { useCart } from "../../context/CartContext";
+import { useFavorites } from "../../context/FavoritesContext";
+import Animated, {
+  FadeInDown,
+  FadeInRight,
+  FadeInUp,
+} from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
 const ProductDetailScreen = ({ route, navigation }) => {
-  const { product } = route.params || {}; // Kiểm tra product có tồn tại không
-  const { cart, addToCart } = useCart(); // Lấy giỏ hàng từ context
-  const { isFavorite, addToFavorites, removeFromFavorites } = useFavorites(); // Lấy favorites từ context
+  const { product } = route.params || {};
+  const { cart, addToCart } = useCart();
+  const { isFavorite, addToFavorites, removeFromFavorites } = useFavorites();
   const [showFlyImage, setShowFlyImage] = useState(false);
   const [isFavoriteProduct, setIsFavoriteProduct] = useState(false);
 
   // Animation
-  const animatedValue = useRef(new Animated.Value(1)).current;
-  const flyAnimation = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const animatedValue = useRef(new RNAnimated.Value(1)).current;
+  const flyAnimation = useRef(new RNAnimated.ValueXY({ x: 0, y: 0 })).current;
 
   // Cập nhật trạng thái yêu thích khi component mount
   useEffect(() => {
@@ -41,28 +46,28 @@ const ProductDetailScreen = ({ route, navigation }) => {
   }, [product, isFavorite]);
 
   const handleAddToCart = (event) => {
-    if (!product) return; // Tránh lỗi khi product chưa có dữ liệu
+    if (!product) return;
 
     event.target.measure((fx, fy, width, height, px, py) => {
       flyAnimation.setValue({ x: px, y: py });
       animatedValue.setValue(1);
       setShowFlyImage(true);
 
-      Animated.parallel([
-        Animated.timing(flyAnimation, {
-          toValue: { x: 300, y: 50 }, // Bay lên vị trí icon giỏ hàng
+      RNAnimated.parallel([
+        RNAnimated.timing(flyAnimation, {
+          toValue: { x: 300, y: 50 },
           duration: 800,
           easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
-        Animated.timing(animatedValue, {
+        RNAnimated.timing(animatedValue, {
           toValue: 0,
           duration: 800,
           useNativeDriver: true,
         }),
       ]).start(() => {
         setShowFlyImage(false);
-        addToCart(product); // Thêm sản phẩm vào giỏ hàng trong context
+        addToCart(product);
       });
     });
   };
@@ -117,139 +122,158 @@ const ProductDetailScreen = ({ route, navigation }) => {
       <StatusBar barStyle="light-content" backgroundColor="#F08080" />
 
       {/* Thanh điều hướng */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <View style={styles.rightIcons}>
+      <Animated.View entering={FadeInDown.duration(300)}>
+        <View style={styles.header}>
           <TouchableOpacity
-            style={styles.iconButton}
-            onPress={() => navigation.navigate("Cart")}
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
           >
-            <View style={styles.iconCircle}>
-              <Ionicons name="cart-outline" size={22} color="#F08080" />
-              {cart.length > 0 && (
-                <View style={styles.cartBadge}>
-                  <Text style={styles.cartCount}>{cart.length}</Text>
-                </View>
-              )}
-            </View>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={toggleFavorite}>
-            <View style={styles.iconCircle}>
-              <Ionicons
-                name={isFavoriteProduct ? "heart" : "heart-outline"}
-                size={22}
-                color={isFavoriteProduct ? "#FF5252" : "#F08080"}
-              />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <View style={styles.iconCircle}>
-              <Ionicons name="share-social-outline" size={20} color="#F08080" />
-            </View>
-          </TouchableOpacity>
+          <View style={styles.rightIcons}>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => navigation.navigate("Cart")}
+            >
+              <View style={styles.iconCircle}>
+                <Ionicons name="cart-outline" size={22} color="#F08080" />
+                {cart.length > 0 && (
+                  <View style={styles.cartBadge}>
+                    <Text style={styles.cartCount}>{cart.length}</Text>
+                  </View>
+                )}
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={toggleFavorite}
+            >
+              <View style={styles.iconCircle}>
+                <Ionicons
+                  name={isFavoriteProduct ? "heart" : "heart-outline"}
+                  size={22}
+                  color={isFavoriteProduct ? "#FF5252" : "#F08080"}
+                />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <View style={styles.iconCircle}>
+                <Ionicons
+                  name="share-social-outline"
+                  size={20}
+                  color="#F08080"
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </Animated.View>
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: product.image }} style={styles.image} />
-        </View>
-
-        <View style={styles.detailsContainer}>
-          {/* Thông tin cơ bản */}
-          <View style={styles.basicInfoContainer}>
-            <Text style={styles.name}>{product.name}</Text>
-            <Text style={styles.price}>
-              {parseInt(product.price).toLocaleString()}₫
-            </Text>
-
-            <View style={styles.ratingContainer}>
-              <View style={styles.stars}>
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Ionicons
-                    key={star}
-                    name={star <= 4 ? "star" : "star-outline"}
-                    size={16}
-                    color={star <= 4 ? "#FFB800" : "#ccc"}
-                    style={styles.starIcon}
-                  />
-                ))}
-                <Text style={styles.ratingText}>4.0</Text>
-              </View>
-              <Text style={styles.soldCount}>Đã bán 128</Text>
-            </View>
+        <Animated.View entering={FadeInDown.duration(400)}>
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: product.image }} style={styles.image} />
           </View>
+        </Animated.View>
 
-          {/* Thông tin vận chuyển */}
-          <View style={styles.deliveryContainer}>
-            <View style={styles.deliveryRow}>
-              <Ionicons
-                name="location-outline"
-                size={18}
-                color="#666"
-                style={styles.deliveryIcon}
-              />
-              <Text style={styles.deliveryTitle}>Địa điểm chi nhánh:</Text>
-              <Text style={styles.deliveryValue}>
-                82 Hồ Tùng Mậu, P.Bến Nghé, Q.1, TP.HCM
+        <Animated.View entering={FadeInDown.duration(400).delay(100)}>
+          <View style={styles.detailsContainer}>
+            {/* Thông tin cơ bản */}
+            <View style={styles.basicInfoContainer}>
+              <Text style={styles.name}>{product.name}</Text>
+              <Text style={styles.price}>
+                {parseInt(product.price).toLocaleString()}₫
               </Text>
-              <Ionicons name="chevron-forward" size={16} color="#F08080" />
+
+              <View style={styles.ratingContainer}>
+                <View style={styles.stars}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Ionicons
+                      key={star}
+                      name={star <= 4 ? "star" : "star-outline"}
+                      size={16}
+                      color={star <= 4 ? "#FFB800" : "#ccc"}
+                      style={styles.starIcon}
+                    />
+                  ))}
+                  <Text style={styles.ratingText}>4.0</Text>
+                </View>
+                <Text style={styles.soldCount}>Đã bán 128</Text>
+              </View>
             </View>
 
-            <View style={styles.divider} />
+            {/* Thông tin vận chuyển */}
+            <Animated.View entering={FadeInDown.duration(400).delay(200)}>
+              <View style={styles.deliveryContainer}>
+                <View style={styles.deliveryRow}>
+                  <Ionicons
+                    name="location-outline"
+                    size={18}
+                    color="#666"
+                    style={styles.deliveryIcon}
+                  />
+                  <Text style={styles.deliveryTitle}>Địa điểm chi nhánh:</Text>
+                  <Text style={styles.deliveryValue}>
+                    82 Hồ Tùng Mậu, P.Bến Nghé, Q.1, TP.HCM
+                  </Text>
+                  <Ionicons name="chevron-forward" size={16} color="#F08080" />
+                </View>
 
-            <View style={styles.deliveryRow}>
-              <Ionicons
-                name="time-outline"
-                size={18}
-                color="#666"
-                style={styles.deliveryIcon}
-              />
-              <Text style={styles.deliveryTitle}>Thời gian giao:</Text>
-              <Text style={styles.deliveryValue}>24h - 48h</Text>
-            </View>
+                <View style={styles.divider} />
+
+                <View style={styles.deliveryRow}>
+                  <Ionicons
+                    name="time-outline"
+                    size={18}
+                    color="#666"
+                    style={styles.deliveryIcon}
+                  />
+                  <Text style={styles.deliveryTitle}>Thời gian giao:</Text>
+                  <Text style={styles.deliveryValue}>24h - 48h</Text>
+                </View>
+              </View>
+            </Animated.View>
+
+            {/* Mô tả sản phẩm */}
+            <Animated.View entering={FadeInDown.duration(400).delay(300)}>
+              <View style={styles.descriptionSection}>
+                <Text style={styles.sectionTitle}>Mô tả sản phẩm</Text>
+                <Text style={styles.description}>{product.description}</Text>
+              </View>
+            </Animated.View>
+
+            {/* Thông tin chi tiết */}
+            <Animated.View entering={FadeInDown.duration(400).delay(400)}>
+              <View style={styles.specSection}>
+                <Text style={styles.sectionTitle}>Thông tin chi tiết</Text>
+                <View style={styles.specRow}>
+                  <Text style={styles.specLabel}>Thương hiệu</Text>
+                  <Text style={styles.specValue}>Halora</Text>
+                </View>
+                <View style={styles.specRow}>
+                  <Text style={styles.specLabel}>Xuất xứ</Text>
+                  <Text style={styles.specValue}>Việt Nam</Text>
+                </View>
+                <View style={styles.specRow}>
+                  <Text style={styles.specLabel}>Chất liệu</Text>
+                  <Text style={styles.specValue}>Cao cấp</Text>
+                </View>
+                <View style={styles.specRow}>
+                  <Text style={styles.specLabel}>Bảo hành</Text>
+                  <Text style={styles.specValue}>12 tháng</Text>
+                </View>
+              </View>
+            </Animated.View>
           </View>
-
-          {/* Mô tả sản phẩm */}
-          <View style={styles.descriptionSection}>
-            <Text style={styles.sectionTitle}>Mô tả sản phẩm</Text>
-            <Text style={styles.description}>{product.description}</Text>
-          </View>
-
-          {/* Thông tin chi tiết */}
-          <View style={styles.specSection}>
-            <Text style={styles.sectionTitle}>Thông tin chi tiết</Text>
-            <View style={styles.specRow}>
-              <Text style={styles.specLabel}>Thương hiệu</Text>
-              <Text style={styles.specValue}>Halora</Text>
-            </View>
-            <View style={styles.specRow}>
-              <Text style={styles.specLabel}>Xuất xứ</Text>
-              <Text style={styles.specValue}>Việt Nam</Text>
-            </View>
-            <View style={styles.specRow}>
-              <Text style={styles.specLabel}>Chất liệu</Text>
-              <Text style={styles.specValue}>Cao cấp</Text>
-            </View>
-            <View style={styles.specRow}>
-              <Text style={styles.specLabel}>Bảo hành</Text>
-              <Text style={styles.specValue}>12 tháng</Text>
-            </View>
-          </View>
-        </View>
+        </Animated.View>
       </ScrollView>
 
       {/* Animation sản phẩm bay vào giỏ hàng */}
       {showFlyImage && (
-        <Animated.Image
+        <RNAnimated.Image
           source={{ uri: product.image }}
           style={[
             styles.flyImage,
@@ -265,40 +289,44 @@ const ProductDetailScreen = ({ route, navigation }) => {
       )}
 
       {/* Floating Cart Button */}
-      <TouchableOpacity
-        style={styles.floatingCartButton}
-        onPress={() => navigation.navigate("Cart")}
-      >
-        <Ionicons name="cart" size={24} color="#fff" />
-        {cart.length > 0 && (
-          <View style={styles.floatingCartBadge}>
-            <Text style={styles.floatingCartCount}>{cart.length}</Text>
-          </View>
-        )}
-      </TouchableOpacity>
+      <Animated.View entering={FadeInRight.duration(400)}>
+        <TouchableOpacity
+          style={styles.floatingCartButton}
+          onPress={() => navigation.navigate("Cart")}
+        >
+          <Ionicons name="cart" size={24} color="#fff" />
+          {cart.length > 0 && (
+            <View style={styles.floatingCartBadge}>
+              <Text style={styles.floatingCartCount}>{cart.length}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </Animated.View>
 
       {/* Nút Thêm vào giỏ hàng & Mua ngay */}
-      <View style={styles.fixedButtonContainer}>
-        <View style={styles.buttonsWrapper}>
-          <TouchableOpacity style={styles.chatButton}>
-            <Ionicons name="chatbubble-outline" size={22} color="#666" />
-            <Text style={styles.chatButtonText}>Chat</Text>
-          </TouchableOpacity>
+      <Animated.View entering={FadeInUp.duration(400)}>
+        <View style={styles.fixedButtonContainer}>
+          <View style={styles.buttonsWrapper}>
+            <TouchableOpacity style={styles.chatButton}>
+              <Ionicons name="chatbubble-outline" size={22} color="#666" />
+              <Text style={styles.chatButtonText}>Chat</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.addToCartButton}
-            onPress={(event) => handleAddToCart(event)}
-          >
-            <Ionicons name="cart-outline" size={22} color="#fff" />
-            <Text style={styles.buttonText}>Thêm vào giỏ</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addToCartButton}
+              onPress={(event) => handleAddToCart(event)}
+            >
+              <Ionicons name="cart-outline" size={22} color="#fff" />
+              <Text style={styles.buttonText}>Thêm vào giỏ</Text>
+            </TouchableOpacity>
 
-          {/* <TouchableOpacity style={styles.buyNowButton}>
-            <Ionicons name="flash-outline" size={22} color="#fff" />
-            <Text style={styles.buttonText}>Mua ngay</Text>
-          </TouchableOpacity> */}
+            {/* <TouchableOpacity style={styles.buyNowButton}>
+              <Ionicons name="flash-outline" size={22} color="#fff" />
+              <Text style={styles.buttonText}>Mua ngay</Text>
+            </TouchableOpacity> */}
+          </View>
         </View>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 };

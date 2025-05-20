@@ -12,6 +12,8 @@ import { getAuth, signOut } from "firebase/auth";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
+import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 
 const ProfileScreen = () => {
   const [userInfo, setUserInfo] = useState(null);
@@ -47,7 +49,10 @@ const ProfileScreen = () => {
           onPress: () => {
             signOut(auth)
               .then(() => {
-                Alert.alert("Đăng xuất thành công!");
+                Toast.show({
+                  text1: "Đăng xuất thành công!",
+                  type: "success",
+                });
                 navigation.replace("Login");
               })
               .catch((error) => {
@@ -61,9 +66,9 @@ const ProfileScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <Animated.View entering={FadeInDown.duration(300)} style={styles.container}>
       {/* Profile Card */}
-      <TouchableOpacity
+      <TouchableOpacity 
         style={styles.profileCard}
         onPress={() => navigation.navigate("UserInfo")}
         activeOpacity={0.7}
@@ -121,7 +126,7 @@ const ProfileScreen = () => {
           onPress={handleLogout}
         />
       </View>
-    </ScrollView>
+    </Animated.View>
   );
 };
 

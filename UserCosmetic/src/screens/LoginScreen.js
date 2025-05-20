@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "pink",
+    marginBottom: 30, 
   },
   logoContainer: {
     flex: 1.5,

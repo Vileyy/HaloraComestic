@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getDatabase, ref, onValue, off } from "firebase/database";
+import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
 
 const ExploreScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
@@ -34,8 +35,7 @@ const ExploreScreen = ({ navigation }) => {
               id: key,
               ...data[key],
             }))
-            .filter((item) => item?.image && item?.name); // Lọc chỉ lấy sản phẩm có ảnh & tên
-
+            .filter((item) => item?.image && item?.name);
           setProducts(productsArray);
           setFilteredProducts(productsArray);
         } else {
@@ -92,7 +92,7 @@ const ExploreScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <Animated.View entering={FadeInDown.duration(300)} style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.header}>
         {/* Thanh tìm kiếm */}
@@ -109,7 +109,7 @@ const ExploreScreen = ({ navigation }) => {
       </View>
 
       {/* Bộ lọc */}
-      <View style={styles.filterContainer}>
+      <Animated.View entering={FadeInDown.duration(300)} style={styles.filterContainer}>
         <Text style={styles.filterLabel}>Sắp xếp theo:</Text>
         <View style={styles.filtersWrapper}>
           {[
@@ -150,14 +150,14 @@ const ExploreScreen = ({ navigation }) => {
             </TouchableOpacity>
           ))}
         </View>
-      </View>
+      </Animated.View>
 
       {/* Hiển thị số lượng kết quả */}
-      <View style={styles.resultsCountContainer}>
+      <Animated.View entering={FadeInDown.duration(300)} style={styles.resultsCountContainer}>
         <Text style={styles.resultsCount}>
           {filteredProducts.length} sản phẩm
         </Text>
-      </View>
+      </Animated.View>
 
       {/* Hiển thị loading */}
       {loading ? (
@@ -165,7 +165,8 @@ const ExploreScreen = ({ navigation }) => {
           <ActivityIndicator size="large" color="#ff6f61" />
         </View>
       ) : (
-        <FlatList
+        <Animated.FlatList
+          entering={FadeInDown.duration(300)}
           data={filteredProducts}
           keyExtractor={(item) => item.id}
           numColumns={2}
@@ -215,7 +216,7 @@ const ExploreScreen = ({ navigation }) => {
           }}
         />
       )}
-    </View>
+    </Animated.View>
   );
 };
 

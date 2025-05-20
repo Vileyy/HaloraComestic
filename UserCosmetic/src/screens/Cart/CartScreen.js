@@ -11,94 +11,117 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useCart } from "../../context/CartContext";
+import Animated, {
+  FadeInDown,
+  FadeInRight,
+  FadeInUp,
+} from "react-native-reanimated";
 
 const CartScreen = ({ navigation }) => {
   const { cart, updateQuantity, removeFromCart, toggleSelect } = useCart();
 
   const selectedItems = cart.filter((item) => item.selected);
-  const totalAmount = selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalAmount = selectedItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   const renderEmptyCart = () => (
-    <View style={styles.emptyContainer}>
+    <Animated.View
+      entering={FadeInDown.duration(400)}
+      style={styles.emptyContainer}
+    >
       <Ionicons name="cart-outline" size={100} color="#ddd" />
       <Text style={styles.emptyText}>Giỏ hàng của bạn đang trống</Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.continueShoppingButton}
         onPress={() => navigation.navigate("Home")}
       >
         <Text style={styles.continueShoppingText}>Tiếp tục mua sắm</Text>
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 
-  const renderCartItem = ({ item }) => (
-    <View style={styles.cartItem}>
-      <TouchableOpacity 
-        style={styles.selectButton} 
-        onPress={() => toggleSelect(item.id)}
-      >
-        <Ionicons
-          name={item.selected ? "checkmark-circle" : "ellipse-outline"}
-          size={28}
-          color={item.selected ? "#4CAF50" : "#bbb"}
-        />
-      </TouchableOpacity>
+  const renderCartItem = ({ item, index }) => (
+    <Animated.View entering={FadeInDown.duration(400).delay(index * 80)}>
+      <View style={styles.cartItem}>
+        <TouchableOpacity
+          style={styles.selectButton}
+          onPress={() => toggleSelect(item.id)}
+        >
+          <Ionicons
+            name={item.selected ? "checkmark-circle" : "ellipse-outline"}
+            size={28}
+            color={item.selected ? "#4CAF50" : "#bbb"}
+          />
+        </TouchableOpacity>
 
-      <Image source={{ uri: item.image }} style={styles.productImage} />
+        <Image source={{ uri: item.image }} style={styles.productImage} />
 
-      <View style={styles.productInfo}>
-        <Text style={styles.productName} numberOfLines={2}>
-          {item.name}
-        </Text>
-        <Text style={styles.productPrice}>
-          {parseInt(item.price).toLocaleString()}₫
-        </Text>
+        <View style={styles.productInfo}>
+          <Text style={styles.productName} numberOfLines={2}>
+            {item.name}
+          </Text>
+          <Text style={styles.productPrice}>
+            {parseInt(item.price).toLocaleString()}₫
+          </Text>
 
-        <View style={styles.quantityControls}>
-          <TouchableOpacity
-            style={[styles.quantityButton, item.quantity <= 1 && styles.disabledButton]}
-            onPress={() => item.quantity > 1 && updateQuantity(item.id, item.quantity - 1)}
-            disabled={item.quantity <= 1}
-          >
-            <Ionicons name="remove" size={20} color={item.quantity <= 1 ? "#ccc" : "#333"} />
-          </TouchableOpacity>
-          
-          <View style={styles.quantityDisplay}>
-            <Text style={styles.quantityText}>{item.quantity}</Text>
+          <View style={styles.quantityControls}>
+            <TouchableOpacity
+              style={[
+                styles.quantityButton,
+                item.quantity <= 1 && styles.disabledButton,
+              ]}
+              onPress={() =>
+                item.quantity > 1 && updateQuantity(item.id, item.quantity - 1)
+              }
+              disabled={item.quantity <= 1}
+            >
+              <Ionicons
+                name="remove"
+                size={20}
+                color={item.quantity <= 1 ? "#ccc" : "#333"}
+              />
+            </TouchableOpacity>
+
+            <View style={styles.quantityDisplay}>
+              <Text style={styles.quantityText}>{item.quantity}</Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.quantityButton}
+              onPress={() => updateQuantity(item.id, item.quantity + 1)}
+            >
+              <Ionicons name="add" size={20} color="#333" />
+            </TouchableOpacity>
           </View>
-          
-          <TouchableOpacity
-            style={styles.quantityButton}
-            onPress={() => updateQuantity(item.id, item.quantity + 1)}
-          >
-            <Ionicons name="add" size={20} color="#333" />
-          </TouchableOpacity>
         </View>
-      </View>
 
-      <TouchableOpacity 
-        style={styles.deleteButton}
-        onPress={() => removeFromCart(item.id)}
-      >
-        <Ionicons name="trash-outline" size={24} color="#FF5252" />
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => removeFromCart(item.id)}
+        >
+          <Ionicons name="trash-outline" size={24} color="#FF5252" />
+        </TouchableOpacity>
+      </View>
+    </Animated.View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={28} color="#333" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Giỏ hàng của bạn</Text>
-        <View style={styles.headerRight} />
-      </View>
+      <Animated.View entering={FadeInDown.duration(300)}>
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="arrow-back" size={28} color="#333" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Giỏ hàng của bạn</Text>
+          <View style={styles.headerRight} />
+        </View>
+      </Animated.View>
 
       {cart.length === 0 ? (
         renderEmptyCart()
@@ -114,30 +137,39 @@ const CartScreen = ({ navigation }) => {
       )}
 
       {cart.length > 0 && (
-        <View style={styles.footer}>
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalLabel}>Tổng thanh toán:</Text>
-            <Text style={styles.totalAmount}>{totalAmount.toLocaleString()}₫</Text>
+        <Animated.View entering={FadeInUp.duration(400)}>
+          <View style={styles.footer}>
+            <View style={styles.totalContainer}>
+              <Text style={styles.totalLabel}>Tổng thanh toán:</Text>
+              <Text style={styles.totalAmount}>
+                {totalAmount.toLocaleString()}₫
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={[
+                styles.checkoutButton,
+                selectedItems.length === 0 && styles.disabledCheckoutButton,
+              ]}
+              disabled={selectedItems.length === 0}
+              onPress={() => {
+                if (selectedItems.length > 0) {
+                  navigation.navigate("Checkout", { cartItems: selectedItems });
+                } else {
+                  alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán!");
+                }
+              }}
+            >
+              <Text style={styles.checkoutText}>Thanh toán ngay</Text>
+              <Ionicons
+                name="arrow-forward"
+                size={20}
+                color="#fff"
+                style={styles.checkoutIcon}
+              />
+            </TouchableOpacity>
           </View>
-          
-          <TouchableOpacity
-            style={[
-              styles.checkoutButton,
-              selectedItems.length === 0 && styles.disabledCheckoutButton,
-            ]}
-            disabled={selectedItems.length === 0}
-            onPress={() => {
-              if (selectedItems.length > 0) {
-                navigation.navigate("Checkout", { cartItems: selectedItems });
-              } else {
-                alert("Vui lòng chọn ít nhất một sản phẩm để thanh toán!");
-              }
-            }}
-          >
-            <Text style={styles.checkoutText}>Thanh toán ngay</Text>
-            <Ionicons name="arrow-forward" size={20} color="#fff" style={styles.checkoutIcon} />
-          </TouchableOpacity>
-        </View>
+        </Animated.View>
       )}
     </SafeAreaView>
   );

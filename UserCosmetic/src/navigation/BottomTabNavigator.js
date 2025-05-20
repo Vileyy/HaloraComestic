@@ -181,7 +181,7 @@ const AnimatedTabIcon = ({ name, focused }) => {
 
 const BottomTabNavigator = () => {
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#fff", marginBottom: -6 }}>
       {/* Background cong */}
       <CustomTabBackground color="#fff" />
 
