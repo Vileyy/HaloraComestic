@@ -69,7 +69,7 @@ const HomeScreen = () => {
   //Xử lý khi nhấn vào sản phẩm trong danh sách gợi ý
   const handleProductSelect = (product) => {
     setSuggestions([]); // Ẩn gợi ý
-    navigation.navigate("ProductDetailScreen", { product }); // Chuyển sang trang chi tiết sản phẩm
+    navigation.navigate("ProductDetailScreen", { product });
   };
 
   //Hàm xử lý tiền VND

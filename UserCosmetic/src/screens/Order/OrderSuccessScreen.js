@@ -7,8 +7,8 @@ const OrderSuccessScreen = () => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      navigation.navigate("OrderStatus"); 
-    }, 1500);
+      navigation.navigate("Home"); 
+    }, 1300);
 
     return () => clearTimeout(timeout);
   }, []);

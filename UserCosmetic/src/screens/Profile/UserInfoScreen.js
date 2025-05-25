@@ -12,6 +12,8 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  Modal,
+  FlatList,
 } from "react-native";
 import { getAuth, updateProfile, updateEmail } from "firebase/auth";
 import { getDatabase, ref, set, get } from "firebase/database";
@@ -39,6 +41,15 @@ const UserInfoScreen = () => {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [gender, setGender] = useState("Nam");
+  const [isAddressModalVisible, setIsAddressModalVisible] = useState(false);
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedWard, setSelectedWard] = useState(null);
+  const [addressDetail, setAddressDetail] = useState("");
+  const [currentStep, setCurrentStep] = useState("province"); 
 
   useEffect(() => {
     if (user) {
@@ -70,7 +81,152 @@ const UserInfoScreen = () => {
         }
       });
     }
+    fetchProvinces();
   }, []);
+
+  const fetchProvinces = async () => {
+    try {
+      const response = await fetch(
+        "https://provinces.open-api.vn/api/?depth=1"
+      );
+      const data = await response.json();
+      setProvinces(data);
+    } catch (error) {
+      Alert.alert("Lỗi", "Không thể tải danh sách tỉnh/thành phố");
+    }
+  };
+
+  const fetchDistricts = async (provinceCode) => {
+    try {
+      const response = await fetch(
+        `https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`
+      );
+      const data = await response.json();
+      setDistricts(data.districts);
+    } catch (error) {
+      Alert.alert("Lỗi", "Không thể tải danh sách quận/huyện");
+    }
+  };
+
+  const fetchWards = async (districtCode) => {
+    try {
+      const response = await fetch(
+        `https://provinces.open-api.vn/api/d/${districtCode}?depth=2`
+      );
+      const data = await response.json();
+      setWards(data.wards);
+    } catch (error) {
+      Alert.alert("Lỗi", "Không thể tải danh sách phường/xã");
+    }
+  };
+
+  const handleProvinceSelect = (province) => {
+    setSelectedProvince(province);
+    setSelectedDistrict(null);
+    setSelectedWard(null);
+    fetchDistricts(province.code);
+    setCurrentStep("district");
+  };
+
+  const handleDistrictSelect = (district) => {
+    setSelectedDistrict(district);
+    setSelectedWard(null);
+    fetchWards(district.code);
+    setCurrentStep("ward");
+  };
+
+  const handleWardSelect = (ward) => {
+    setSelectedWard(ward);
+    setCurrentStep("detail");
+  };
+
+  const handleAddressComplete = () => {
+    const fullAddress = `${addressDetail}, ${selectedWard.name}, ${selectedDistrict.name}, ${selectedProvince.name}`;
+    setAddress(fullAddress);
+    setIsAddressModalVisible(false);
+    setCurrentStep("province");
+  };
+
+  const renderAddressModal = () => (
+    <Modal
+      visible={isAddressModalVisible}
+      animationType="slide"
+      transparent={true}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Chọn địa chỉ</Text>
+            <TouchableOpacity onPress={() => setIsAddressModalVisible(false)}>
+              <Ionicons name="close" size={24} color="#333" />
+            </TouchableOpacity>
+          </View>
+
+          {currentStep === "province" && (
+            <FlatList
+              data={provinces}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.addressItem}
+                  onPress={() => handleProvinceSelect(item)}
+                >
+                  <Text>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          )}
+
+          {currentStep === "district" && (
+            <FlatList
+              data={districts}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.addressItem}
+                  onPress={() => handleDistrictSelect(item)}
+                >
+                  <Text>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          )}
+
+          {currentStep === "ward" && (
+            <FlatList
+              data={wards}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.addressItem}
+                  onPress={() => handleWardSelect(item)}
+                >
+                  <Text>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          )}
+
+          {currentStep === "detail" && (
+            <View style={styles.detailContainer}>
+              <TextInput
+                style={styles.detailInput}
+                placeholder="Nhập số nhà, tên đường..."
+                value={addressDetail}
+                onChangeText={setAddressDetail}
+              />
+              <TouchableOpacity
+                style={styles.completeButton}
+                onPress={handleAddressComplete}
+              >
+                <Text style={styles.completeButtonText}>Lưu thông tin</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      </View>
+    </Modal>
+  );
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -104,7 +260,11 @@ const UserInfoScreen = () => {
       }
 
       const userRef = ref(db, `users/${user.uid}`);
+      const snapshot = await get(userRef);
+      const currentData = snapshot.val() || {};
+
       await set(userRef, {
+        ...currentData,
         displayName,
         photoURL,
         email,
@@ -113,10 +273,9 @@ const UserInfoScreen = () => {
         gender,
       });
 
-      Alert.alert("Thành công", "Cập nhật thông tin thành công!");
-      setTimeout(() => {
-        navigation.navigate("ProfileScreen");
-      }, 1500);
+      Alert.alert("Thành công", "Cập nhật thông tin thành công!", [
+        { text: "OK" },
+      ]);
     } catch (error) {
       Alert.alert("Lỗi", error.message);
     }
@@ -190,12 +349,16 @@ const UserInfoScreen = () => {
 
             <View style={styles.inputSection}>
               <Text style={styles.label}>Địa chỉ</Text>
-              <TextInput
-                style={styles.input}
-                value={address}
-                onChangeText={setAddress}
-                placeholder="Nhập địa chỉ"
-              />
+              <TouchableOpacity
+                style={styles.addressInput}
+                onPress={() => setIsAddressModalVisible(true)}
+              >
+                <Text
+                  style={address ? styles.addressText : styles.placeholderText}
+                >
+                  {address || "Chọn địa chỉ"}
+                </Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inputSection}>
@@ -237,6 +400,7 @@ const UserInfoScreen = () => {
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
+      {renderAddressModal()}
     </SafeAreaView>
   );
 };
@@ -351,6 +515,70 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  addressItem: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  detailContainer: {
+    padding: 15,
+  },
+  detailInput: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 15,
+  },
+  completeButton: {
+    backgroundColor: PRIMARY_COLOR,
+    padding: 15,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  completeButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  addressInput: {
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    backgroundColor: LIGHT_GRAY,
+    justifyContent: "center",
+  },
+  addressText: {
+    fontSize: 16,
+    color: "#333",
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: "#999",
   },
 });
 

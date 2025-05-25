@@ -102,7 +102,7 @@ const TabViewMenu = ({ isVisible, onClose }) => {
   const handleLogout = () => {
     Alert.alert(
       "Xác nhận đăng xuất",
-      "Bạn có chắc chắn muốn đăng xuất không?",
+      "Bạn có chắc chắn muốn đăng xuất không ?",
       [
         {
           text: "Hủy",

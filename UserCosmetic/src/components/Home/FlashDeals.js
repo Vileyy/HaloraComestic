@@ -74,7 +74,6 @@ const FlashDeals = () => {
   // Chạy đồng hồ đếm ngược
   useEffect(() => {
     if (countdown <= 0) {
-      // Khi thời gian kết thúc, tạo thời gian mới
       const resetCountdown = async () => {
         const newEndTime = new Date().getTime() + TIMER_DURATION * 1000;
         await AsyncStorage.setItem(TIMER_STORAGE_KEY, newEndTime.toString());
@@ -87,7 +86,6 @@ const FlashDeals = () => {
 
     const timer = setInterval(() => {
       setCountdown((prev) => {
-        // Khi countdown = 1, lần update tiếp theo sẽ là 0
         if (prev <= 1) {
           clearInterval(timer);
         }

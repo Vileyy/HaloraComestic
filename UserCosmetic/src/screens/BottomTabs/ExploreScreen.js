@@ -13,7 +13,14 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getDatabase, ref, onValue, off } from "firebase/database";
-import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
+import Animated, {
+  FadeInDown,
+  FadeInRight,
+  FadeIn,
+  SlideInDown,
+  Layout,
+  ZoomIn,
+} from "react-native-reanimated";
 
 const ExploreScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
@@ -92,11 +99,14 @@ const ExploreScreen = ({ navigation }) => {
   );
 
   return (
-    <Animated.View entering={FadeInDown.duration(300)} style={styles.container}>
+    <Animated.View entering={FadeInDown.duration(500)} style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       <View style={styles.header}>
         {/* Thanh tìm kiếm */}
-        <View style={styles.searchBar}>
+        <Animated.View
+          entering={SlideInDown.delay(200)}
+          style={styles.searchBar}
+        >
           <Ionicons name="search-outline" size={20} color="#666" />
           <TextInput
             style={styles.input}
@@ -105,11 +115,14 @@ const ExploreScreen = ({ navigation }) => {
             value={searchText}
             onChangeText={handleSearch}
           />
-        </View>
+        </Animated.View>
       </View>
 
       {/* Bộ lọc */}
-      <Animated.View entering={FadeInDown.duration(300)} style={styles.filterContainer}>
+      <Animated.View
+        entering={FadeInDown.delay(300)}
+        style={styles.filterContainer}
+      >
         <Text style={styles.filterLabel}>Sắp xếp theo:</Text>
         <View style={styles.filtersWrapper}>
           {[
@@ -153,7 +166,10 @@ const ExploreScreen = ({ navigation }) => {
       </Animated.View>
 
       {/* Hiển thị số lượng kết quả */}
-      <Animated.View entering={FadeInDown.duration(300)} style={styles.resultsCountContainer}>
+      <Animated.View
+        entering={FadeInDown.delay(500)}
+        style={styles.resultsCountContainer}
+      >
         <Text style={styles.resultsCount}>
           {filteredProducts.length} sản phẩm
         </Text>
@@ -166,14 +182,14 @@ const ExploreScreen = ({ navigation }) => {
         </View>
       ) : (
         <Animated.FlatList
-          entering={FadeInDown.duration(300)}
+          entering={FadeInDown.delay(600)}
           data={filteredProducts}
           keyExtractor={(item) => item.id}
           numColumns={2}
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.productsList}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             if (!item?.image || !item?.name) return null;
 
             return (
@@ -184,13 +200,19 @@ const ExploreScreen = ({ navigation }) => {
                 }}
                 activeOpacity={0.9}
               >
-                <View style={styles.imageContainer}>
+                <Animated.View
+                  entering={FadeInDown.delay(index * 100)}
+                  style={styles.imageContainer}
+                >
                   <Image
                     source={{ uri: item.image }}
                     style={styles.productImage}
                   />
-                </View>
-                <View style={styles.productInfo}>
+                </Animated.View>
+                <Animated.View
+                  entering={FadeInDown.delay(index * 100 + 200)}
+                  style={styles.productInfo}
+                >
                   <Text
                     style={styles.productName}
                     numberOfLines={1}
@@ -210,7 +232,7 @@ const ExploreScreen = ({ navigation }) => {
                       {item.description}
                     </Text>
                   )}
-                </View>
+                </Animated.View>
               </TouchableOpacity>
             );
           }}
@@ -321,6 +343,7 @@ const styles = StyleSheet.create({
   },
   productsList: {
     padding: 8,
+
   },
   row: {
     justifyContent: "space-between",

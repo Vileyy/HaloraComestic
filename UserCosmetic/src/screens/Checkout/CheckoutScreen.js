@@ -103,11 +103,8 @@ const CheckoutScreen = ({ route, navigation }) => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-
-      // Save the order data
       await set(newOrderRef, orderData);
 
-      // Also save reference to user's orders with items info for direct access
       const userOrderRef = ref(db, `users/${userId}/orders/${orderId}`);
       await set(userOrderRef, {
         orderId: orderId,
@@ -128,7 +125,6 @@ const CheckoutScreen = ({ route, navigation }) => {
 
       setIsLoading(false);
 
-      // Navigate to success screen with order ID
       navigation.navigate("OrderSuccessScreen", {
         orderId: orderId,
         total: calculateTotal(),

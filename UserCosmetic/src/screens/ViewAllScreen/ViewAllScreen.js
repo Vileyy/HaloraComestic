@@ -14,6 +14,14 @@ import {
 import { getDatabase, ref, onValue } from "firebase/database";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import Animated, {
+  FadeInDown,
+  FadeInRight,
+  FadeIn,
+  SlideInDown,
+  Layout,
+  ZoomIn,
+} from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 const cardWidth = width * 0.45;
@@ -71,32 +79,43 @@ const ViewAllScreen = () => {
     setSortOrder(order);
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.productContainer}
-      onPress={() =>
-        navigation.navigate("ProductDetailScreen", { product: item })
-      }
+  const renderItem = ({ item, index }) => (
+    <Animated.View
+      entering={FadeInDown.delay(index * 100).springify()}
+      layout={Layout.springify()}
     >
-      <View style={styles.imageContainer}>
-        <Image source={{ uri: item.image }} style={styles.productImage} />
-      </View>
-      <View style={styles.productInfo}>
-        <Text style={styles.productName} numberOfLines={2}>
-          {item.name}
-        </Text>
-        <Text style={styles.productPrice}>
-          {parseInt(item.price).toLocaleString("vi-VN")} VNĐ
-        </Text>
-      </View>
-    </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.productContainer}
+        onPress={() =>
+          navigation.navigate("ProductDetailScreen", { product: item })
+        }
+      >
+        <Animated.View
+          style={styles.imageContainer}
+          entering={ZoomIn.delay(index * 100)}
+        >
+          <Image source={{ uri: item.image }} style={styles.productImage} />
+        </Animated.View>
+        <Animated.View
+          style={styles.productInfo}
+          entering={FadeIn.delay(index * 100 + 200)}
+        >
+          <Text style={styles.productName} numberOfLines={2}>
+            {item.name}
+          </Text>
+          <Text style={styles.productPrice}>
+            {parseInt(item.price).toLocaleString("vi-VN")} VNĐ
+          </Text>
+        </Animated.View>
+      </TouchableOpacity>
+    </Animated.View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
-      <View style={styles.header}>
+      <Animated.View style={styles.header} entering={FadeInDown.duration(500)}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -105,9 +124,12 @@ const ViewAllScreen = () => {
         </TouchableOpacity>
         <Text style={styles.title}>{title}</Text>
         <View style={styles.headerRight} />
-      </View>
+      </Animated.View>
 
-      <View style={styles.searchContainer}>
+      <Animated.View
+        style={styles.searchContainer}
+        entering={SlideInDown.delay(200).springify()}
+      >
         <View style={styles.searchInputContainer}>
           <Ionicons
             name="search"
@@ -123,10 +145,13 @@ const ViewAllScreen = () => {
             placeholderTextColor="#999"
           />
         </View>
-      </View>
+      </Animated.View>
 
-      <View style={styles.sortContainer}>
-        <View style={styles.sortButtons}>
+      <Animated.View
+        style={styles.sortContainer}
+        entering={FadeInDown.delay(400)}
+      >
+        <Animated.View style={styles.sortButtons} entering={FadeIn.delay(600)}>
           <TouchableOpacity
             style={[
               styles.sortButton,
@@ -175,14 +200,17 @@ const ViewAllScreen = () => {
               Giá giảm dần
             </Text>
           </TouchableOpacity>
-        </View>
-      </View>
+        </Animated.View>
+      </Animated.View>
 
-      <View style={styles.resultsInfo}>
+      <Animated.View
+        style={styles.resultsInfo}
+        entering={FadeInDown.delay(500)}
+      >
         <Text style={styles.resultsText}>
           {filteredProducts.length} sản phẩm
         </Text>
-      </View>
+      </Animated.View>
 
       <FlatList
         data={filteredProducts}
