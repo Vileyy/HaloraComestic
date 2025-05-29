@@ -42,7 +42,7 @@ https://youtu.be/LfFp_7D7DFM
 ## 🧪 4. HƯỚNG DẪN CHẠY DỰ ÁN
 
 ### Bước 1: Clone về máy
-- git clone https://github.com/HaloraComestic
+- git clone https://github.com/Vileyy/HaloraComestic.git
 ### Bước 2: Cài đặt dependencies
 - npm install
 ### Bước 3: Chạy project bằng Expo
