@@ -19,11 +19,12 @@ https://youtu.be/LfFp_7D7DFM
 - Cập nhật được các thông tin cá nhân
 
 ### Dành cho quản trị viên (Admin App)
-- Đăng nhập quản trị  
 - Quản lý sản phẩm (Thêm/Sửa/Xoá)  
 - Quản lý danh mục, thương hiệu  
 - Quản lý đơn hàng, cập nhật trạng thái  
 - Thống kê doanh thu theo thời gian, danh mục và sản phẩm bán chạy 💰📊
+- Quản lý thông báo
+- Quản lý hình ảnh Banner
 
 ---
 
