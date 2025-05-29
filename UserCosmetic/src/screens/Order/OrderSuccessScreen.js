@@ -1,25 +1,47 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Animated } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const OrderSuccessScreen = () => {
   const navigation = useNavigation();
+  const scaleAnim = new Animated.Value(0);
 
   useEffect(() => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      friction: 4,
+      useNativeDriver: true,
+    }).start();
+
     const timeout = setTimeout(() => {
-      navigation.navigate("Home"); 
-    }, 1300);
+      navigation.navigate("Home");
+    }, 2000);
 
     return () => clearTimeout(timeout);
   }, []);
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../../assets/order-success.jpg")} 
-        style={styles.image}
-      />
-      <Text style={styles.text}>Đặt hàng thành công!</Text>
+      <Animated.View
+        style={[
+          styles.successContainer,
+          {
+            transform: [{ scale: scaleAnim }],
+          },
+        ]}
+      >
+        <View style={styles.iconContainer}>
+          <MaterialIcons name="check-circle" size={100} color="#4CAF50" />
+        </View>
+        <Text style={styles.title}>Đặt hàng thành công!</Text>
+        <Text style={styles.subtitle}>
+          Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi
+        </Text>
+        <Text style={styles.message}>
+          Chúng tôi sẽ xử lý đơn hàng của bạn trong thời gian sớm nhất
+        </Text>
+      </Animated.View>
     </View>
   );
 };
@@ -31,15 +53,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
   },
-  image: {
-    width: 150,
-    height: 150,
+  successContainer: {
+    alignItems: "center",
+    padding: 20,
+  },
+  iconContainer: {
     marginBottom: 20,
   },
-  text: {
-    fontSize: 20,
-    color: "green",
+  title: {
+    fontSize: 24,
     fontWeight: "bold",
+    color: "#4CAF50",
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  message: {
+    fontSize: 14,
+    color: "#888",
+    textAlign: "center",
   },
 });
 

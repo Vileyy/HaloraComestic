@@ -90,7 +90,7 @@ const TabViewMenu = ({ isVisible, onClose }) => {
           useNativeDriver: true,
         }),
       ]).start(() => {
-        setShouldRender(false); // chỉ tắt render khi animation xong
+        setShouldRender(false); 
       });
     }
   }, [isVisible]);
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
   },
   userEmail: {
-    fontSize: 14,
+    fontSize: 12,
     color: "#FFF",
     opacity: 0.8,
     marginTop: 2,
