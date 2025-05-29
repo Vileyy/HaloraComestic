@@ -3,6 +3,7 @@
 
 ## 📱 1. LINK VIDEO DEMO COSMETIC APP NHÓM 05 - PHÁT TRIỂN ỨNG DỤNG ĐA NỀN TẢNG
 https://youtu.be/LfFp_7D7DFM
+
 ---
 
 ## 🌟 2. TÍNH NĂNG NỔI BẬT
