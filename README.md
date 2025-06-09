@@ -1,51 +1,52 @@
-# NHÓM 05 - XÂY DỰNG ỨNG DỤNG QUẢN LÝ VÀ BÁN MỸ PHẨM CHO CÔNG TY HT
+# COSMETIC MANAGEMENT AND SALES APP FOR HT COMPANY  
 ---
 
-## 📱 1. LINK VIDEO DEMO COSMETIC APP NHÓM 05 - PHÁT TRIỂN ỨNG DỤNG ĐA NỀN TẢNG
-https://youtu.be/LfFp_7D7DFM
-
----
-
-## 🌟 2. TÍNH NĂNG NỔI BẬT
-
-### Dành cho khách hàng (User App)
-- Đăng ký, Đăng nhập bằng Firebase Authentication
-- Quên mật khẩu sẽ người về Mail của người dùng để reset password
-- Duyệt sản phẩm theo danh mục, thương hiệu  
-- Tìm kiếm, lọc sản phẩm  
-- Xem chi tiết sản phẩm  
-- Thêm vào giỏ hàng   
-- Đặt hàng, chọn phương thức vận chuyển   
-- Xem lịch sử mua hàng & trạng thái đơn hàng
-- Cập nhật được các thông tin cá nhân
-
-### Dành cho quản trị viên (Admin App)
-- Quản lý sản phẩm (Thêm/Sửa/Xoá)  
-- Quản lý danh mục, thương hiệu  
-- Quản lý đơn hàng, cập nhật trạng thái  
-- Thống kê doanh thu theo thời gian, danh mục và sản phẩm bán chạy 💰📊
-- Quản lý thông báo
-- Quản lý hình ảnh Banner
+## 📱 1. VIDEO DEMO LINK - COSMETIC APP BY GROUP 05 - CROSS-PLATFORM APPLICATION DEVELOPMENT  
+https://youtu.be/LfFp_7D7DFM  
 
 ---
 
-## 🧰 3. CÔNG NGHỆ SỬ DỤNG
+## 🌟 2. KEY FEATURES  
 
-| Công nghệ | Mô tả |
-|----------|-------|
-| **React Native** | Xây dựng ứng dụng di động đa nền tảng |
-| **Expo** | Dễ dàng test và build ứng dụng |
-| **Firebase** | Authentication, Realtime Database |
-| **Cloudinary** | Lưu trữ và quản lý hình ảnh |
-| **React Navigation** | Quản lý điều hướng trong ứng dụng |
-| **Chart.js** | Thống kê doanh thu trực quan |
+### For Customers (User App)  
+- Register and log in via Firebase Authentication  
+- Forgot password feature: sends reset email to the user's email address  
+- Browse products by category and brand  
+- Search and filter products  
+- View product details  
+- Add products to cart  
+- Place orders and choose a shipping method  
+- View order history and order status  
+- Update personal information  
+
+### For Administrators (Admin App)  
+- Manage products (Add/Edit/Delete)  
+- Manage categories and brands  
+- Manage orders and update their status  
+- View revenue statistics by time, category, and best-selling products 💰📊  
+- Manage notifications  
+- Manage banner images  
 
 ---
-## 🧪 4. HƯỚNG DẪN CHẠY DỰ ÁN
 
-### Bước 1: Clone về máy
-- git clone https://github.com/Vileyy/HaloraComestic.git
-### Bước 2: Cài đặt dependencies
-- npm install
-### Bước 3: Chạy project bằng Expo
+## 🧰 3. TECHNOLOGIES USED  
+
+| Technology         | Description                                |
+|--------------------|--------------------------------------------|
+| **React Native**   | Build cross-platform mobile applications   |
+| **Expo**           | Easy testing and building of the app       |
+| **Firebase**       | Authentication, Realtime Database          |
+| **Cloudinary**     | Image storage and management               |
+| **React Navigation** | Navigation management in the app       |
+| **Chart.js**       | Visual revenue statistics                  |
+
+---
+
+## 🧪 4. PROJECT SETUP GUIDE  
+
+### Step 1: Clone the repository  
+- git clone https://github.com/Vileyy/HaloraComestic.git  
+### Step 2: Install dependencies  
+- npm install  
+### Step 3: Run the project using Expo  
 - npx expo start
